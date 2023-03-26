@@ -246,6 +246,10 @@ MAIN: {
         }
 
         # unification probably occurs around here:
+        $opt->{file_filter}    = _compile_file_filter($opt);
+        $opt->{descend_filter} = _compile_descend_filter($opt);
+
+        # TODO: warn if any items in the original set are ignored. Probably add a flag about it
         if ( defined $opt->{files_from} ) {
             $files = App::Ack::Files->from_file( $opt, $opt->{files_from} );
             exit 1 unless $files;
@@ -257,9 +261,6 @@ MAIN: {
                     App::Ack::warn( "$target: No such file or directory" );
                 }
             }
-
-            $opt->{file_filter}    = _compile_file_filter($opt, \@start);
-            $opt->{descend_filter} = _compile_descend_filter($opt);
 
             $files = App::Ack::Files->from_argv( $opt, \@start );
         }
@@ -403,7 +404,7 @@ sub _compile_descend_filter {
 }
 
 sub _compile_file_filter {
-    my ( $opt, $start ) = @_;
+    my ( $opt ) = @_;
 
     my $ifiles_filters = $opt->{ifiles};
 
@@ -420,8 +421,6 @@ sub _compile_file_filter {
             $direct_filters->add($filter);
         }
     }
-
-    my %is_member_of_starting_set = map { (get_file_id($_) => 1) } @{$start};
 
     my @ignore_dir_filter = @{$opt->{idirs} || []};
     my @is_inverted       = map { $_->is_inverted() } @ignore_dir_filter;
@@ -440,10 +439,6 @@ sub _compile_file_filter {
                 return 0 if !$opt_v;
             }
         }
-        # ack always selects files that are specified on the command
-        # line, regardless of filetype.  If you want to ack a JPEG,
-        # and say "ack foo whatever.jpg" it will do it for you.
-        return 1 if $is_member_of_starting_set{ get_file_id($File::Next::name) };
 
         if ( $dont_ignore_dir_filter ) {
             if ( $previous_dir eq $File::Next::dir ) {
