@@ -245,6 +245,7 @@ MAIN: {
             }
         }
 
+        # unification probably occurs around here:
         if ( defined $opt->{files_from} ) {
             $files = App::Ack::Files->from_file( $opt, $opt->{files_from} );
             exit 1 unless $files;

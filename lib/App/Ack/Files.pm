@@ -59,7 +59,7 @@ Return an iterator that reads the list of files to search from a
 given file.  If I<$filename> is '-', then it reads from STDIN.
 
 =cut
-
+# TODO: add a --read0 flag that only works for --files-from and -x
 sub from_file {
     my $class = shift;
     my $opt   = shift;
