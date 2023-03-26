@@ -2,6 +2,11 @@
 
 This is a guide intended to help new developers work on ack.
 
+## Generating Makefile
+
+Several helpful commands are packaged as makefile targets. The `Makefile.PL` script generates a
+`Makefile` for you which provides these targets. Be sure to run `perl Makefile.PL` to generate them.
+
 ## Helper Scripts
 
 ### tack
